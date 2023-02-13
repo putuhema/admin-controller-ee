@@ -1,87 +1,158 @@
 import Head from "next/head";
+import Link from "next/link";
+import { NextPage } from "next";
+import { useEffect, useState } from "react";
+
+import {
+  BiEditAlt,
+  BiChevronLeft,
+  BiChevronRight,
+  BiSearch,
+  BiUserPlus,
+} from "react-icons/bi";
 
 import Sidebar from "@/components/Sidebar";
-import Boxes from "@/components/boxes";
+import Alert from "@/components/AlertDialog";
+import { Program, Student } from "@/types";
 
-export default function Home() {
+type HomeProps = {
+  students: Student[];
+};
+
+const Home: NextPage<HomeProps> = () => {
+  const [studentDataId, setStudentDataId] = useState(1);
+  const [students, setStudents] = useState<Student[]>([]);
+
+  const updateStudentDataId = (id: number) => {
+    setStudentDataId(id);
+  };
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      const res = await fetch("http://localhost:3000/api/students");
+      const data = await res.json();
+      setStudents(data);
+    };
+    fetchStudentData();
+  }, [setStudentDataId]);
+
   return (
     <>
       <Head>
         <title>Admin | Erlangga Education</title>
       </Head>
 
-      <main className="w-full flex flex-col sm:flex-row flex-grow overflow-hidden">
+      <main className="w-full flex flex-col sm:flex-row flex-grow">
         <Sidebar />
-        <div className="w-full h-full flex flex-col flex-grow overflow-auto gap-4 p-4">
-          <div className="flex flex-grow gap-4 justify-between ">
-            <div className="border rounded-xl text-center px-4 py-2 w-fit bg-white">
-              <p>Siswa</p>
-              <p className="text-6xl font-bold">19</p>
-            </div>
-            <Boxes
-              title={"Program"}
-              child={[
-                { t: "calistung", q: 4 },
-                { t: "Matematika SD I, II, III", q: 10 },
-                { t: "Matematika SD IV, V, IV", q: 13 },
-                { t: "Matematika SMP", q: 1 },
-                { t: "Bahasa Inggris SD I, II, III", q: 3 },
-                { t: "Bahasa Inggris SD IV, V, IV", q: 6 },
-                { t: "Prisma", q: 10 },
-              ]}
-            />
-          </div>
-          {/* table */}
-          <div className="flex flex-col bg-white py-4 px-6 h-[718px] rounded-md">
-            <div className="flex justify-end py-4">
-              <button className="border-2 border-black p-2 rounded-md font-bold">
-                tambah murid
-              </button>
-            </div>
-            <div className="flex justify-between gap-2 bg-neutral-100 p-2">
-              <div className=" w-1/12">#</div>
-              <div className="w-1/2">Student Name</div>
-              <div className="w-1/12">Class</div>
-              <div className="w-3/12">program</div>
-              <div className="w-2/12">agreed spp</div>
-              <div className="w-2/12">last payment</div>
-              <div className="w-2/12">acc/paid</div>
-              <div className="w-2/12">action</div>
-            </div>
-            <div className="overflow-auto">
-              {[1, 2, 3, 4, 5, 7, 8, 9, 10].map((n) => (
-                <div
-                  key={n}
-                  className={` flex justify-between gap-2  p-2 rounded-md hover:bg-neutral-100 ${
-                    n % 2 === 0 ? "bg-neutral-100" : ""
-                  }`}
-                >
-                  <div className=" w-1/12">{n}</div>
-                  <div className="w-1/2">Jon Doe</div>
-                  <div className="w-1/12">V</div>
-                  <div className="w-3/12">
-                    <ul>
-                      <li>math</li>
-                      <li>english</li>
-                      <li>prisma</li>
-                    </ul>
+        <div className="w-full h-full flex flex-col flex-grow gap-4 p-4">
+          <div className="flex flex-col bg-white py-4 px-6 rounded-md">
+            <div className="flex justify-between py-4">
+              <form action="#">
+                <div className="flex items-center border rounded">
+                  <div className="bg-neutral-200 p-2">
+                    <BiSearch className="text-neutral-500  text-xl" />
                   </div>
-                  <div className="w-2/12">Rp. 25,000</div>
-                  <div className="w-2/12">28/1/2023</div>
-                  <div className="w-2/12">Rp. 25,000</div>
-                  <div className="w-2/12">
-                    <button className="border p-2 px-4 rounded mr-4">+</button>
-                    <button className="border p-2 px-4 rounded ">x</button>
-                  </div>
+                  <input
+                    className="p-1 text-neutral-500 outline-none"
+                    type="text"
+                    placeholder="cari siswa ..."
+                  />
                 </div>
-              ))}
+              </form>
+              <Link
+                href="/form"
+                className="border-2 px-4 text-xl bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md font-bold"
+              >
+                <BiUserPlus />
+              </Link>
             </div>
 
-            {/* row */}
+            <div className="border rounded-md ">
+              <div className="flex justify-between gap-2 bg-neutral-100 p-2 font-bold text-neutral-500">
+                <div className="w-1/12 text-center">#</div>
+                <div className="w-4/12 text-center">Nama Siswa</div>
+                <div className="w-1/12 text-center">Kelas</div>
+                <div className="w-3/12 text-center">Program</div>
+                <div className="w-2/12 text-center">SPP Disetujui</div>
+                <div className="w-2/12 text-center">Pembayaran Terakhir</div>
+                <div className="w-2/12 text-center">Pertemuan</div>
+                <div className="w-2/12 text-center"></div>
+              </div>
+              {students.length > 0 && (
+                <div
+                  key={students.length}
+                  className="overflow-auto max-h-screen"
+                >
+                  {students.map((student, i) => (
+                    <div
+                      key={student.id}
+                      className={` flex justify-between gap-2  p-2 rounded-md hover:bg-neutral-100 ${
+                        student.id % 2 === 0 ? "bg-neutral-100" : ""
+                      }`}
+                    >
+                      <div className="w-1/12 text-center">{i + 1}</div>
+                      <Link
+                        href={`/student/${student.id}`}
+                        className="w-4/12 text-center"
+                      >
+                        {student.name}
+                      </Link>
+                      <div className="w-1/12 text-center">{student.class}</div>
+                      <div className="w-3/12 text-center">
+                        <ul className="text-left">
+                          {student.program.length > 0 &&
+                            JSON.parse(student.program).map((s: Program) => (
+                              <li key={s.value}>{s.value}</li>
+                            ))}
+                        </ul>
+                      </div>
+                      <div className="w-2/12 text-end">Rp. 25,000</div>
+                      <div className="w-2/12 text-center">28/1/2023</div>
+                      <div className="w-2/12 ">
+                        <div className="flex gap-1 justify-center">
+                          <div className="w-5 h-5 bg-green-300 rounded"></div>
+                          <div className="w-5 h-5 bg-green-300 rounded"></div>
+                          <div className="w-5 h-5 bg-green-300 rounded"></div>
+                          <div className="w-5 h-5 bg-neutral-300 rounded"></div>
+                        </div>
+                      </div>
+                      <div className="w-2/12 flex flex-row gap-2 items-start">
+                        <Link
+                          href={`/form/${student.id}`}
+                          className="p-2 px-4 rounded bg-yellow-300 hover:bg-yellow-400 flex w-max"
+                        >
+                          <BiEditAlt />
+                        </Link>
+                        <Alert id={student.id} fn={updateStudentDataId} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="flex justify-center mt-6 gap-4">
+              <button className=" cursor-pointer">
+                <BiChevronLeft className="text-neutral-400 hover:text-black text-2xl" />
+              </button>
+              <p className="hover:underline rounded cursor-pointer text-neutral-400">
+                1
+              </p>
+              <p className="hover:underline rounded cursor-pointer font-bold">
+                2
+              </p>
+              <p className=" hover:underline rounded cursor-pointer text-neutral-400">
+                3
+              </p>
+              <button className="cursor-pointer">
+                <BiChevronRight className="text-neutral-400 hover:text-black text-2xl" />
+              </button>
+            </div>
             <div></div>
           </div>
         </div>
       </main>
     </>
   );
-}
+};
+
+export default Home;
