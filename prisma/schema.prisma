@@ -21,12 +21,7 @@ model Student {
   mothername   String
   phone        String
   program      String
-  Meeting      Meeting[]
+  meeting      String
 }
 
-model Meeting {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  student   Student  @relation(fields: [studentId], references: [id])
-  studentId Int
-}
+

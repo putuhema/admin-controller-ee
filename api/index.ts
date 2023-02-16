@@ -32,10 +32,58 @@ app.post("/add-student", async (req: Request, res: Response) => {
       mothername,
       phone,
       program,
+      meeting: "",
     },
   });
 
   res.status(200).json(result);
+});
+
+app.post("/student/add-meeting", async (req: Request, res: Response) => {
+  const { date, student } = req.body;
+
+  const meeting = await prisma.student.update({
+    where: {
+      id: Number(student.id),
+    },
+    data: {
+      meeting: date,
+    },
+  });
+
+  res.status(200).json(meeting);
+});
+
+app.post("/edit-student", async (req: Request, res: Response) => {
+  const {
+    id,
+    name,
+    placeOfBirth,
+    dateOfBirth,
+    class: cl,
+    address,
+    fathername,
+    mothername,
+    phone,
+    program,
+  } = req.body;
+
+  const student = await prisma.student.update({
+    where: { id: id },
+    data: {
+      name,
+      placeOfBirth,
+      dateOfBirth,
+      class: cl,
+      address,
+      fathername,
+      mothername,
+      phone,
+      program,
+    },
+  });
+
+  res.status(200).json(student);
 });
 
 app.get("/students", async (_req: Request, res: Response) => {

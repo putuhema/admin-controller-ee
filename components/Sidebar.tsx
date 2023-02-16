@@ -14,13 +14,17 @@ const Sidebar = () => {
   }
 
   return (
-    <aside className="sticky mb-6 sm:mb-0 top-0 sm:w-[300px] w-full flex flex-shrink flex-grow-0 md:h-screen p-2 md:p-6 border bg-white">
+    <aside className="sticky mb-6 sm:mb-0 top-0 sm:w-[300px] w-full flex flex-shrink flex-grow-0 md:h-screen p-2 md:p-6 bg-white dark:bg-slate-900 dark:border-r dark:border-r-slate-700 dark:text-white">
       <ul className="w-full cursor-pointer flex flex-row justify-between  md:justify-start md:flex-col  text-lg">
         <li className="px-2">
           <Link
             href="/"
-            className={`flex w-full  items-center gap-2 py-2 px-1 rounded group hover:bg-neutral-100
-             ${sidebarActive === "Home" ? "bg-neutral-100" : ""}`}
+            className={`flex w-full  items-center gap-2 py-2 px-1 rounded group hover:bg-neutral-100 dark:hover:bg-slate-800
+             ${
+               sidebarActive === "Home"
+                 ? "bg-neutral-100 dark:bg-slate-800"
+                 : ""
+             }`}
             onClick={(e) => handleSidebarOnClick(e)}
           >
             <span className="text-4xl md:text-xl">
@@ -37,7 +41,11 @@ const Sidebar = () => {
             }}
             href="#"
             className={`flex justify-between w-full items-center gap-2 py-2 px-1 rounded grouphover:bg-neutral-100
-             ${sidebarActive === "Program" ? "bg-neutral-100" : ""} 
+             ${
+               sidebarActive === "Program"
+                 ? "bg-neutral-100 dark:bg-slate-800"
+                 : ""
+             } 
             `}
           >
             <div className="flex items-center gap-2">

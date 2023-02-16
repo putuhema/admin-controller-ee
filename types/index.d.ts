@@ -9,6 +9,7 @@ export type Student = {
   mothername: string;
   phone: string;
   program: string;
+  meeting: string;
 };
 
 export type Program = {
@@ -17,6 +18,7 @@ export type Program = {
 };
 
 export type Form = {
+  id?: number;
   name?: string;
   placeOfBirth?: string;
   dateOfBirth?: string;

@@ -8,31 +8,53 @@ import { BiArrowBack } from "react-icons/bi";
 import Sidebar from "@/components/Sidebar";
 import { StudentProps, Form, Program } from "@/types";
 
-const programs = [
-  "Calistung",
-  "Matematika SD Kelas I,II,III",
-  "Matematika SD kelas IV,V,VI",
-  "Matematika SMP",
-  "Bahasa Inggris SD Kelas I,II,III",
-  "Bahasa Inggris SD Kelas IV,V,VI",
-  "Bahasa Inggris SMP",
-  "Prisma Kalkulator Tangan",
+const programStatic = [
+  {
+    value: "Calistung",
+    isCheck: false,
+  },
+  {
+    value: "Matematika SD Kelas I,II,III",
+    isCheck: false,
+  },
+  {
+    value: "Matematika SD kelas IV,V,VI",
+    isCheck: false,
+  },
+  {
+    value: "Matematika SMP",
+    isCheck: false,
+  },
+  {
+    value: "Bahasa Inggris SD Kelas I,II,III",
+    isCheck: false,
+  },
+  {
+    value: "Bahasa Inggris SD Kelas IV,V,VI",
+    isCheck: false,
+  },
+  {
+    value: "Bahasa Inggris SMP",
+    isCheck: false,
+  },
+  {
+    value: "Prisma Kalkulator Tangan",
+    isCheck: false,
+  },
 ];
 
 const StudentForm: NextPage<StudentProps> = ({ student }) => {
-  const pickedProgram: Program[] = JSON.parse(student.program);
-  console.log(pickedProgram);
-
   const [formData, setFormData] = useState<Form>({
-    name: "",
-    placeOfBirth: "",
-    dateOfBirth: "",
-    class: "",
-    address: "",
-    fathername: "",
-    mothername: "",
-    phone: "",
-    program: [],
+    id: student.id,
+    name: student.name,
+    placeOfBirth: student.placeOfBirth,
+    dateOfBirth: student.dateOfBirth,
+    class: student.class,
+    address: student.address,
+    fathername: student.fathername,
+    mothername: student.mothername,
+    phone: student.phone,
+    program: JSON.parse(student.program),
   });
 
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -43,25 +65,32 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
 
   const handleChangeCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
-    if (checked) {
-      setFormData({
-        ...formData,
-        program: [...formData.program!, { value: value, isCheck: checked }],
-      });
-    } else {
-      const index = formData.program!.findIndex(
-        (p: Program) => p.value === value
-      );
-      formData.program!.splice(index, 1);
-      setFormData({ ...formData, program: formData.program });
-    }
+    // setPrograms(
+    //   programs.map((p) => {
+    //     console.log(`${checked}`);
+
+    //     return {
+    //       ...p,
+    //       isCheck: p.value === value ? checked : p.isCheck,
+    //     };
+    //   })
+    // );
+    const program = formData.program!;
+
+    setFormData({
+      ...formData,
+      program: program.map((p) => ({
+        ...p,
+        isCheck: p.value === value ? checked : p.isCheck,
+      })),
+    });
   };
 
   function handleOnSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     axios({
       method: "post",
-      url: "/api/add-student",
+      url: "/api/edit-student",
       data: { ...formData, program: JSON.stringify(formData.program) },
     });
 
@@ -74,7 +103,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
       fathername: "",
       mothername: "",
       phone: "",
-      program: [],
+      program: programStatic,
     });
   }
   return (
@@ -101,7 +130,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
               onSubmit={handleOnSubmit}
               className="w-full max-w-lg mt-10"
             >
-              <input type="hidden" name="id" value={student.id} />
+              <input type="hidden" name="id" id="id" value={student.id} />
               <div className="flex flex-col mb-6">
                 <label htmlFor="name" className="text-neutral-500">
                   Nama
@@ -110,7 +139,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                   type="text"
                   id="name"
                   onChange={(e) => handleOnChange(e)}
-                  value={student.name}
+                  value={formData.name}
                   name="name"
                   className="w-full border rounded p-2"
                 />
@@ -123,7 +152,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                   <input
                     type="text"
                     onChange={(e) => handleOnChange(e)}
-                    value={student.placeOfBirth}
+                    value={formData.placeOfBirth}
                     id="placeOfBirth"
                     name="placeOfBirth"
                     className="border rounded p-2"
@@ -136,7 +165,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                   <input
                     type="date"
                     onChange={(e) => handleOnChange(e)}
-                    value={student.dateOfBirth}
+                    value={formData.dateOfBirth}
                     id="dateOfBirth"
                     className="border rounded p-2 w-full"
                   />
@@ -150,7 +179,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                   <input
                     type="text"
                     onChange={(e) => handleOnChange(e)}
-                    value={student.class}
+                    value={formData.class}
                     id="class"
                     name="class"
                     className="border rounded p-2"
@@ -163,7 +192,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                   <input
                     type="text"
                     onChange={(e) => handleOnChange(e)}
-                    value={student.address}
+                    value={formData.address}
                     id="address"
                     name="address"
                     className="border rounded p-2"
@@ -180,7 +209,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                     <input
                       type="text"
                       onChange={(e) => handleOnChange(e)}
-                      value={student.fathername}
+                      value={formData.fathername}
                       id="fathername"
                       name="fathername"
                       className="border rounded p-2"
@@ -193,7 +222,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                     <input
                       type="text"
                       onChange={(e) => handleOnChange(e)}
-                      value={student.mothername}
+                      value={formData.mothername}
                       id="mothername"
                       name="mothername"
                       className="border rounded p-2"
@@ -208,7 +237,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                 <input
                   type="text"
                   onChange={(e) => handleOnChange(e)}
-                  value={student.phone}
+                  value={formData.phone}
                   id="phone"
                   name="phone"
                   className="border roudned p-2 w-full"
@@ -218,7 +247,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                 <fieldset className="border p-4 py-4 flex gap-4 w-full">
                   <legend className="text-neutral-500">Program</legend>
                   <div className="flex flex-col">
-                    {pickedProgram.map((program) => (
+                    {formData.program!.map((program) => (
                       <div key={program.value} className="flex gap-2">
                         <input
                           type="checkbox"
@@ -236,7 +265,7 @@ const StudentForm: NextPage<StudentProps> = ({ student }) => {
                 </fieldset>
               </div>
               <button className="bg-blue-500 hover:bg-blue-600 p-2 rounded-md font-bold float-right my-6 text-white">
-                Tambah Siswa
+                Ubah Data Siswa
               </button>
             </form>
           </div>

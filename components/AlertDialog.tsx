@@ -7,6 +7,7 @@ const Alert = ({ id, fn }: { id: number; fn: (id: number) => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    fn(id);
     axios({
       method: "delete",
       url: "/api/student-delete",
@@ -42,7 +43,7 @@ const Alert = ({ id, fn }: { id: number; fn: (id: number) => void }) => {
                 onClick={() => setIsOpen(!isOpen)}
                 className="bg-neutral-200 border-2 text-neutral-400 p-2 rounded-md"
               >
-                cancel
+                batal
               </button>
             </AlertDialog.Cancel>
             <AlertDialog.Action asChild>

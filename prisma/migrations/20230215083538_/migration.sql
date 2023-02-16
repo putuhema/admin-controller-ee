@@ -9,5 +9,6 @@ CREATE TABLE "Student" (
     "fathername" TEXT NOT NULL,
     "mothername" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
-    "program" TEXT NOT NULL
+    "program" TEXT NOT NULL,
+    "meeting" TEXT NOT NULL
 );
